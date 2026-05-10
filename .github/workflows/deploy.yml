@@ -34,23 +34,33 @@ jobs:
       - name: Build static site
         run: npm run build
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NODE_ENV: production
 
-      - name: Copy static files
+      - name: Prepare dist folder
         run: |
-          # TanStack Start builds to .output/public
-          if [ -d ".output/public" ]; then
-            cp -r .output/public dist
+          # Ensure dist exists
+          if [ ! -d "dist" ]; then
+            echo "Error: dist folder not created by build!"
+            exit 1
           fi
-          # Ensure API files are in the output
+          
+          # Copy API data to dist
           if [ -d "public/api" ]; then
             mkdir -p dist/api
             cp -r public/api/* dist/api/
           fi
-          # Copy .nojekyll
-          if [ -f "public/.nojekyll" ]; then
-            cp public/.nojekyll dist/
+          
+          # Copy other public assets if they exist
+          if [ -d "public" ]; then
+            cp -r public/* dist/ 2>/dev/null || true
           fi
+          
+          # Create .nojekyll to disable Jekyll processing
+          touch dist/.nojekyll
+          
+          # List what's in dist
+          echo "Contents of dist folder:"
+          ls -la dist/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test GitHub Fetch</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #fff; }
+        button { padding: 10px 20px; margin: 10px 0; font-size: 16px; }
+        pre { background: #2a2a2a; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+    </style>
+</head>
+<body>
+    <h1>GitHub Fetch Test</h1>
+    <button onclick="testFetch()">Test Fetch Architecture.md</button>
+    <div id="output"></div>
+
+    <script>
+        const GH_OWNER = "Reberog";
+        const GH_REPO = "AI-PROJECTS";
+        const GH_BRANCH = "main";
+        const PROJECT_PATH = "AI Powered Financial Ananlysis tool";
+
+        async function testFetch() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<p>🔄 Testing fetch...</p>';
+
+            try {
+                const fileName = 'architecture.md';
+                const fullPath = `${PROJECT_PATH}/${fileName}`;
+                const url = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/${fullPath
+                    .split("/")
+                    .map(encodeURIComponent)
+                    .join("/")}`;
+                
+                output.innerHTML += `<p class="success">📝 URL: ${url}</p>`;
+                
+                const response = await fetch(url);
+                output.innerHTML += `<p class="success">📡 Response status: ${response.status}</p>`;
+                
+                if (response.ok) {
+                    const text = await response.text();
+                    output.innerHTML += `<p class="success">✅ SUCCESS! Retrieved ${text.length} characters</p>`;
+                    output.innerHTML += `<pre>${text.substring(0, 500)}...</pre>`;
+                    
+                    // Extract image
+                    const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+                    const matches = [...text.matchAll(imageRegex)];
+                    if (matches.length > 0) {
+                        const imageUrl = matches[0][2].trim().split(/\s+/)[0];
+                        output.innerHTML += `<p class="success">🖼️ Image found: ${imageUrl}</p>`;
+                        
+                        const fullImageUrl = imageUrl.startsWith('http') 
+                            ? imageUrl 
+                            : `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/${PROJECT_PATH}/${imageUrl}`;
+                        output.innerHTML += `<p class="success">🖼️ Full image URL: ${fullImageUrl}</p>`;
+                        output.innerHTML += `<img src="${fullImageUrl}" style="max-width: 100%; border: 2px solid #4ade80; border-radius: 5px; margin-top: 10px;" />`;
+                    }
+                } else {
+                    output.innerHTML += `<p class="error">❌ FAILED: ${response.status} ${response.statusText}</p>`;
+                }
+            } catch (error) {
+                output.innerHTML += `<p class="error">❌ ERROR: ${error.message}</p>`;
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
