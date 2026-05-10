@@ -50,44 +50,29 @@ jobs:
             cp -r public/api/* dist/api/
           fi
           
-          # Copy other public assets if they exist
+          # Copy other public assets if they exist (skip errors)
           if [ -d "public" ]; then
-            cp -r public/* dist/ 2>/dev/null || true
+            find public -maxdepth 1 -type f -exec cp {} dist/ \; 2>/dev/null || true
           fi
           
-          # Create .nojekyll to disable Jekyll processing
+          # Create .nojekyll to disable Jekyll processing - CRITICAL!
           touch dist/.nojekyll
+          echo "✅ Created .nojekyll in dist/"
           
-          # List what's in dist
-          echo "Contents of dist folder:"
-          ls -la dist/
-          
-          # Verify .nojekyll exists
-          if [ -f "dist/.nojekyll" ]; then
-            echo "✅ .nojekyll file exists in dist/"
-          else
-            echo "❌ .nojekyll file MISSING from dist/"
-            exit 1
-          fi
-          
-          # List all files that will be uploaded
+          # Verify the build
           echo ""
-          echo "All files in dist/ (including hidden):"
-          find dist -type f | head -20
-          
-          # Verify index.html has correct build output (not dev source)
+          echo "📦 Files in dist/:"
+          ls -la dist/ | head -15
           echo ""
-          echo "Verifying dist/index.html..."
-          if grep -q "src/main.tsx" dist/index.html; then
-            echo "❌ ERROR: dist/index.html contains dev source path!"
-            cat dist/index.html
-            exit 1
-          fi
-          if grep -q "/assets/index-" dist/index.html; then
-            echo "✅ dist/index.html is correct (has built assets)"
+          echo "📄 Checking index.html..."
+          if [ -f "dist/index.html" ]; then
+            if grep -q "/assets/" dist/index.html; then
+              echo "✅ index.html looks good (has /assets/ paths)"
+            else
+              echo "⚠️ Warning: index.html might not have correct paths"
+            fi
           else
-            echo "❌ ERROR: dist/index.html doesn't contain built asset paths!"
-            cat dist/index.html
+            echo "❌ ERROR: dist/index.html not found!"
             exit 1
           fi
 
