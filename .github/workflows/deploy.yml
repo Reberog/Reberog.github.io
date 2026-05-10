@@ -61,6 +61,22 @@ jobs:
           # List what's in dist
           echo "Contents of dist folder:"
           ls -la dist/
+          
+          # Verify index.html has correct build output (not dev source)
+          echo ""
+          echo "Verifying dist/index.html..."
+          if grep -q "src/main.tsx" dist/index.html; then
+            echo "❌ ERROR: dist/index.html contains dev source path!"
+            cat dist/index.html
+            exit 1
+          fi
+          if grep -q "/assets/index-" dist/index.html; then
+            echo "✅ dist/index.html is correct (has built assets)"
+          else
+            echo "❌ ERROR: dist/index.html doesn't contain built asset paths!"
+            cat dist/index.html
+            exit 1
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
