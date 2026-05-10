@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Environment variables
+.env
+.env.local
+
+# Project rankings (will be generated)
+project_rankings.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

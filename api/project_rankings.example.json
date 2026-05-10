@@ -1,0 +1,24 @@
+# Example project rankings structure
+{
+  "last_updated": "2026-05-09T10:30:00",
+  "total_projects": 5,
+  "projects": [
+    {
+      "name": "example-project",
+      "path": "example-project",
+      "score": 85,
+      "summary": "An innovative AI-powered solution for real-world problems.",
+      "highlights": [
+        "Advanced ML algorithms",
+        "Production-ready deployment",
+        "Comprehensive documentation"
+      ],
+      "tech_stack": ["Python", "TensorFlow", "FastAPI"],
+      "strengths": "Strong technical implementation with real-world impact",
+      "use_case": "Enterprise data analysis and automation",
+      "last_commit": "2026-05-01T12:00:00Z",
+      "analyzed_at": "2026-05-09T10:30:00"
+    }
+  ],
+  "top_3": []
+}
