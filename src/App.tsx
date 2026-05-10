@@ -8,6 +8,9 @@ import profilePic from "@/assets/profile.jpeg";
 import GitHubProjects from "@/components/GitHubProjects";
 import Skills from "@/components/Skills";
 
+console.log('🚀 App.tsx loaded');
+console.log('📸 Profile pic path:', profilePic);
+
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
